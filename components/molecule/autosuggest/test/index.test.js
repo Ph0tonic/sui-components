@@ -9,7 +9,9 @@ import ReactDOM from 'react-dom'
 
 import chai, {expect} from 'chai'
 import chaiDOM from 'chai-dom'
+import sinon from 'sinon'
 import {createRef} from 'react'
+import {fireEvent} from '@testing-library/react'
 
 import * as pkg from '../src'
 
@@ -82,6 +84,24 @@ describe(json.name, () => {
 
       // Then
       expect(findClassName(container.innerHTML)).to.be.null
+    })
+
+    it('should change its value when firing keydown event', () => {
+      // Given
+      const props = {
+        value: 'value',
+        onChange: sinon.spy()
+      }
+      const event = {target: {value: '1'}}
+
+      // When
+      const {getByRole, debug} = setup(props)
+      const inputElement = getByRole('textbox')
+
+      // Then
+      fireEvent.change(inputElement, event)
+
+      props.onChange.called.should.be.true();
     })
 
     describe('forwardRef', () => {
